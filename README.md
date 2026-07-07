@@ -1,18 +1,16 @@
-# MRI–IHC MP Response Calculator · Lab-style v6
+# MRI–IHC MP Response Calculator & Miller–Payne Prediction System
 
-This version uses a laboratory web-server visual style inspired by scientific database portals: molecular banner, navigation bar, purple hero, module tabs, online calculation area, batch prediction and model guide.
+A gqliulab-style Streamlit web server interface for feature-based prediction of favorable Miller–Payne pathological response.
 
-Main entry:
+## Run locally
 
 ```bash
+pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Required files:
+## Deployment
 
-- `app.py`
-- `model_pipeline.py`
-- `assets/style.css`
-- `model/mp_rf_model.joblib`
-- `model/metadata.json`
-- `requirements.txt`
+Upload all files in this folder to the root of your GitHub repository, then deploy `app.py` on Streamlit Community Cloud.
+
+Do not upload the zip file itself. Upload the extracted files and folders.
