@@ -185,19 +185,27 @@ def render_portal_nav() -> None:
 def render_hero() -> None:
     st.markdown(
         '''
-        <section class="gq-hero balanced" id="home">
+        <section class="gq-hero refined" id="home">
           <div class="hero-main">
-            <span class="gq-new">Research-use web calculator</span>
-            <h1>MRI–IHC MP Response Calculator<br/>Miller–Payne Prediction System</h1>
-            <p>Pre-treatment clinical, MRI and immunohistochemical feature analysis for estimating favorable pathological response in breast cancer.</p>
+            <span class="gq-new">Research-use clinical AI calculator</span>
+            <h1>MRI–IHC MP Response Calculator</h1>
+            <h2>Miller–Payne Prediction System for Breast Cancer</h2>
+            <p>A pre-treatment web calculator for estimating favorable pathological response using clinical variables, MRI phenotypes and immunohistochemical biomarkers.</p>
+            <div class="hero-badges">
+              <span><i>🎯</i><b>Endpoint</b> MP 4–5 response</span>
+              <span><i>🧬</i><b>Input</b> Clinical + MRI + IHC</span>
+              <span><i>📈</i><b>Output</b> Probability estimate</span>
+              <span><i>🔬</i><b>Use</b> Research-only</span>
+            </div>
           </div>
-          <div class="hero-panel">
-            <div><span>Endpoint</span><b>MP 4–5 favorable response</b></div>
-            <div><span>Input modalities</span><b>Clinical + MRI + IHC</b></div>
-            <div><span>Output</span><b>Individualized probability estimate</b></div>
+          <div class="hero-workflow">
+            <div class="workflow-title">Prediction workflow</div>
+            <div class="workflow-step"><span>1</span><b>Enter pre-treatment features</b><em>年龄、MRI、IHC</em></div>
+            <div class="workflow-step"><span>2</span><b>Calculate individualized probability</b><em>MP 4–5概率估计</em></div>
+            <div class="workflow-step"><span>3</span><b>Review interpretation and export</b><em>分层解释与结果导出</em></div>
           </div>
         </section>
-        <div class="gq-tabs balanced-tabs">
+        <div class="gq-tabs refined-tabs">
           <a class="active" href="#calculator">📊 Parameter Calculation</a>
           <a href="#feature-notes">🔎 Feature Notes</a>
           <a href="#guide">📈 Interpretation Guide</a>
@@ -211,11 +219,11 @@ def render_hero() -> None:
 def render_research_summary() -> None:
     st.markdown(
         '''
-        <div class="summary-grid">
-          <div class="summary-card"><small>Clinical question</small><b>能否在治疗前预测MP 4–5良好病理反应？</b><span>用于辅助研究分层与模型转化展示。</span></div>
-          <div class="summary-card"><small>Feature scope</small><b>9项治疗前可获得变量</b><span>年龄、肿瘤大小、ADC、钙化、DCE曲线、ER、PR、HER2、Ki-67。</span></div>
-          <div class="summary-card"><small>Result format</small><b>概率 + 分层 + 预测组别</b><span>输出个体化MP 4–5概率，并标记低/中/高可能性。</span></div>
-          <div class="summary-card"><small>Use boundary</small><b>Research-use only</b><span>仅供科研与展示，不替代MDT和临床治疗决策。</span></div>
+        <div class="summary-grid enriched-summary">
+          <div class="summary-card"><small>Clinical question</small><b>Pre-treatment prediction of MP 4–5 response</b><span>治疗前预测良好病理反应，辅助研究分层与模型展示。</span></div>
+          <div class="summary-card"><small>Feature scope</small><b>9 clinically available features</b><span>年龄、肿瘤大小、ADC、钙化、曲线、ER、PR、HER2、Ki-67。</span></div>
+          <div class="summary-card"><small>Calculation logic</small><b>Feature input → probability → tier</b><span>逐项录入变量后输出个体化概率、低/中/高分层与预测组别。</span></div>
+          <div class="summary-card"><small>Clinical boundary</small><b>Research-use decision support prototype</b><span>不替代医生判断、MDT讨论或标准病理评估。</span></div>
         </div>
         ''', unsafe_allow_html=True
     )
@@ -225,11 +233,12 @@ def render_feature_notes() -> None:
     st.markdown(
         '''
         <div class="feature-notes" id="feature-notes">
-          <div class="note-title"><span>Feature Dictionary</span><b>变量录入说明</b></div>
-          <div class="note-grid">
+          <div class="note-title"><span>Feature Dictionary</span><b>变量录入说明</b><p>所有字段均限定为治疗前可获得信息，避免治疗后病理或结局相关变量进入模型。</p></div>
+          <div class="note-grid four">
             <div><b>Clinical profile</b><p>年龄与肿瘤最大径反映患者基础状态和病灶负荷。</p></div>
-            <div><b>MRI domain</b><p>ADC、钙化和DCE-MRI动态增强曲线用于描述影像表型。</p></div>
-            <div><b>IHC biomarkers</b><p>ER、PR、HER2和Ki-67反映肿瘤生物学行为和增殖活性。</p></div>
+            <div><b>MRI domain</b><p>ADC、钙化和DCE-MRI动态增强曲线用于描述治疗前影像表型。</p></div>
+            <div><b>IHC biomarkers</b><p>ER、PR、HER2和Ki-67反映受体状态和肿瘤增殖活性。</p></div>
+            <div><b>Output interpretation</b><p>结果为MP 4–5概率估计，并通过低/中/高分层辅助阅读。</p></div>
           </div>
         </div>
         ''', unsafe_allow_html=True
@@ -242,14 +251,14 @@ def render_input_controls() -> tuple[bool, dict]:
         '''
         <div class="section-heading spacious">
           <div class="heading-icon">▦</div>
-          <div><h2>Online Calculation</h2><p>逐项输入治疗前特征，点击计算后输出MP 4–5良好病理反应概率、可能性分层和模型预测组别。</p></div>
+          <div><span class="section-eyebrow">Individual calculator</span><h2>Online Calculation</h2><p>逐项输入治疗前可获得变量。右侧面板会同步展示当前输入，并在计算后给出MP 4–5概率、分层解释和模型预测组别。</p></div>
         </div>
         ''',
         unsafe_allow_html=True,
     )
 
     with st.form("single_case_form", clear_on_submit=False):
-        st.markdown('<div class="form-section-title"><span>01</span><b>Clinical profile</b><em>基础临床与病灶负荷</em></div>', unsafe_allow_html=True)
+        st.markdown('<div class="form-section-title"><span>01</span><div><b>Clinical profile</b><em>基础临床与病灶负荷 · Basic clinical and lesion-level characteristics</em></div></div>', unsafe_allow_html=True)
         c1, c2, c3 = st.columns(3, gap="large")
         with c1:
             age = st.number_input("Age / 年龄", min_value=18, max_value=95, value=52, step=1, help="患者治疗前年龄。")
@@ -259,7 +268,7 @@ def render_input_controls() -> tuple[bool, dict]:
             adc = st.number_input("ADC value / ADC值", min_value=0.10, max_value=3.00, value=0.95, step=0.01, format="%.3f", help="治疗前MRI ADC值。")
 
         st.markdown('<div class="form-divider"></div>', unsafe_allow_html=True)
-        st.markdown('<div class="form-section-title"><span>02</span><b>MRI domain</b><em>治疗前影像表型</em></div>', unsafe_allow_html=True)
+        st.markdown('<div class="form-section-title"><span>02</span><div><b>MRI domain</b><em>治疗前影像表型 · Pre-treatment imaging phenotype</em></div></div>', unsafe_allow_html=True)
         c4, c5 = st.columns([0.95, 1.35], gap="large")
         with c4:
             calcification = st.radio("Calcification / 钙化", ["有", "无"], horizontal=True, help="病灶内是否存在钙化描述。")
@@ -267,7 +276,7 @@ def render_input_controls() -> tuple[bool, dict]:
             curve = st.selectbox("DCE-MRI kinetic curve / 动态增强曲线", ["流出", "平台", "持续", "未知 / Not available"], index=0, help="动态增强曲线类型。")
 
         st.markdown('<div class="form-divider"></div>', unsafe_allow_html=True)
-        st.markdown('<div class="form-section-title"><span>03</span><b>Immunohistochemistry domain</b><em>治疗前免疫组化指标</em></div>', unsafe_allow_html=True)
+        st.markdown('<div class="form-section-title"><span>03</span><div><b>Immunohistochemistry domain</b><em>治疗前免疫组化指标 · Biomarker expression profile</em></div></div>', unsafe_allow_html=True)
         c6, c7, c8, c9 = st.columns(4, gap="medium")
         with c6:
             er = st.number_input("ER, %", min_value=0, max_value=100, value=10, step=1)
@@ -278,7 +287,7 @@ def render_input_controls() -> tuple[bool, dict]:
         with c9:
             ki67 = st.number_input("Ki-67, %", min_value=0, max_value=100, value=70, step=1)
 
-        st.markdown('<div class="form-footnote">请仅输入治疗前即可获得的信息；治疗后MRI、术后病理或任何直接反映MP结局的变量不应输入。</div>', unsafe_allow_html=True)
+        st.markdown('<div class="form-footnote"><b>Input boundary</b><br/>请仅输入治疗前即可获得的信息；治疗后MRI、术后病理或任何直接反映MP结局的变量不应输入。</div>', unsafe_allow_html=True)
         submitted = st.form_submit_button("Calculate MP 4–5 Probability  /  计算MP 4–5概率", use_container_width=True)
 
     values = {
@@ -293,6 +302,83 @@ def render_input_controls() -> tuple[bool, dict]:
         "ki67": ki67,
     }
     return submitted, values
+
+
+def _current_profile_html(values: dict) -> str:
+    quick = [
+        ("Age", f"{values['age']}y"),
+        ("Tumor", f"{values['tumor_size']:.2f} cm"),
+        ("ADC", f"{values['adc']:.3f}"),
+    ]
+    rows = [
+        ("Calcification", values["calcification"]),
+        ("Kinetic curve", values["curve"]),
+        ("ER", f"{values['er']}%"),
+        ("PR", f"{values['pr']}%"),
+        ("HER2", str(values["her2"])),
+        ("Ki-67", f"{values['ki67']}%"),
+    ]
+    html = '<div class="profile-cards">'
+    for k, v in quick:
+        html += f'<div><small>{k}</small><b>{v}</b></div>'
+    html += '</div><div class="mini-table compact">'
+    for k, v in rows:
+        html += f"<div><span>{k}</span><b>{v}</b></div>"
+    html += '</div>'
+    return html
+
+
+def _result_html(prob: float | None, threshold: float) -> str:
+    if prob is None:
+        return '''
+        <div class="result-card empty-result refined-empty">
+          <div class="result-kicker">Calculation Results</div>
+          <h3>Awaiting calculation</h3>
+          <p>输入治疗前特征后，点击计算即可生成个体化MP 4–5良好病理反应概率。</p>
+          <div class="skeleton-donut"></div>
+          <div class="skeleton-line wide"></div>
+          <div class="skeleton-line mid"></div>
+          <div class="empty-steps"><span>1</span> Input features</div>
+          <div class="empty-steps"><span>2</span> Calculate probability</div>
+          <div class="empty-steps"><span>3</span> Export result</div>
+        </div>
+        '''
+    tier_en, tier_cn, advice, tier_class = probability_tier(prob)
+    predicted_group = "Favorable response / MP 4–5" if prob >= threshold else "Non-favorable response / MP 1–3"
+    return f'''
+        <div class="result-card {tier_class}">
+          <div class="result-kicker">Calculation Results</div>
+          <h3>Predicted probability of MP 4–5 response</h3>
+          <div class="probability">{pct(prob)}</div>
+          <div class="prob-bar"><span style="width:{100*float(prob):.1f}%"></span></div>
+          <div class="tier-label">{tier_en}</div>
+          <p class="tier-cn">{tier_cn}</p>
+          <div class="decision-box"><span>Model-predicted group</span><b>{predicted_group}</b></div>
+          <p class="advice">{advice}</p>
+        </div>
+        '''
+
+
+def render_right_dashboard(values: dict, prob: float | None, threshold: float) -> None:
+    st.markdown(
+        f'''
+        <aside class="right-control-panel">
+          <div class="side-card input-profile">
+            <div class="card-eyebrow">Current input</div>
+            <h3>Current Input Profile</h3>
+            <p>输入变量实时概览，用于核对本次单病例预测参数。</p>
+            {_current_profile_html(values)}
+          </div>
+          {_result_html(prob, threshold)}
+          <div class="interpret-panel">
+            <h3>Clinical interpretation</h3>
+            <p>模型输出的是MP 4–5良好反应的概率估计，而不是确定性诊断。建议结合MRI复核、IHC一致性、治疗方案和MDT意见解释。</p>
+            <div class="risk-chips"><span>Low</span><span>Intermediate</span><span>High</span></div>
+          </div>
+        </aside>
+        ''',
+        unsafe_allow_html=True,
+    )
 
 
 def render_current_values(values: dict) -> None:
@@ -418,10 +504,11 @@ def render_guide() -> None:
     st.markdown(
         '''
         <div class="guide-title"><span>Model documentation</span><h2>How to use and interpret this calculator</h2></div>
-        <div class="guide-grid enriched">
+        <div class="guide-grid enriched four-guide">
           <div class="guide-card"><h3>1. Supported input features</h3><p>输入变量限定为治疗前可获得的临床资料、MRI特征和免疫组化指标，避免纳入治疗后信息。</p></div>
           <div class="guide-card"><h3>2. Model output</h3><p>输出为MP 4–5良好病理反应的个体化概率估计，并给出低、中、高可能性分层。</p></div>
-          <div class="guide-card"><h3>3. Clinical boundary</h3><p>该网页为科研和展示用途，不构成独立诊断工具，也不替代临床医生或MDT决策。</p></div>
+          <div class="guide-card"><h3>3. Batch data format</h3><p>支持CSV与Excel格式批量预测，结果表中自动追加概率、预测组别与分层标签。</p></div>
+          <div class="guide-card"><h3>4. Clinical boundary</h3><p>该网页为科研和展示用途，不构成独立诊断工具，也不替代临床医生或MDT决策。</p></div>
         </div>
         <div id="contact" class="footer-note">© MP Response Prediction System · MRI–IHC research-use clinical calculator prototype</div>
         ''',
@@ -439,24 +526,23 @@ def main() -> None:
     render_hero()
     render_research_summary()
 
-    left, right = st.columns([1.36, 1.0], gap="large")
+    left, right = st.columns([1.45, 0.95], gap="large")
     with left:
         submitted, values = render_input_controls()
         render_feature_notes()
+    prob = None
+    single_out = None
+    if submitted:
+        input_df = input_to_dataframe(values)
+        prob = float(model.predict_proba(input_df)[0, 1])
+        single_out = input_df.copy()
+        single_out["Predicted_MP4_5_probability"] = round(prob, 4)
+        single_out["Likelihood_tier"] = probability_tier(prob)[0]
+        single_out["Prediction_group"] = "Favorable / MP 4-5" if prob >= threshold else "Non-favorable / MP 1-3"
     with right:
-        render_current_values(values)
-        if submitted:
-            input_df = input_to_dataframe(values)
-            prob = float(model.predict_proba(input_df)[0, 1])
-            render_prediction(prob, threshold)
-            single_out = input_df.copy()
-            single_out["Predicted_MP4_5_probability"] = round(prob, 4)
-            single_out["Likelihood_tier"] = probability_tier(prob)[0]
-            single_out["Prediction_group"] = "Favorable / MP 4-5" if prob >= threshold else "Non-favorable / MP 1-3"
+        render_right_dashboard(values, prob, threshold)
+        if single_out is not None:
             render_download_single(single_out)
-        else:
-            render_empty_result()
-        render_interpretation_panel()
 
     with st.expander("Batch prediction / 批量预测", expanded=False):
         render_batch(model, metadata)
