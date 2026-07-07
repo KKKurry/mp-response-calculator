@@ -3,8 +3,6 @@ from __future__ import annotations
 from html import escape
 from io import BytesIO
 from pathlib import Path
-import base64
-
 import joblib
 import pandas as pd
 import streamlit as st
@@ -15,7 +13,6 @@ from model_pipeline import MODEL_FEATURES  # noqa: F401
 APP_DIR = Path(__file__).resolve().parent
 MODEL_PATH = APP_DIR / "model" / "mp_rf_model.joblib"
 CSS_PATH = APP_DIR / "assets" / "style.css"
-BG_PATH = APP_DIR / "assets" / "warm_breast_background.png"
 SAMPLE_CSV_PATH = APP_DIR / "sample_input.csv"
 SAMPLE_XLSX_PATH = APP_DIR / "sample_input.xlsx"
 
@@ -34,12 +31,14 @@ def load_artifact():
 
 
 def load_css() -> None:
-    extra = ""
-    if BG_PATH.exists():
-        bg_b64 = base64.b64encode(BG_PATH.read_bytes()).decode("utf-8")
-        extra = f"""<style>:root{{--warm-bg:url('data:image/png;base64,{bg_b64}');}}</style>"""
+    """Load lightweight CSS only.
+
+    The previous version embedded a large background image as base64 inside CSS,
+    which could freeze the Streamlit frontend on some browsers. This fixed build
+    uses CSS gradients and lightweight glass cards instead.
+    """
     if CSS_PATH.exists():
-        st.markdown(f"<style>{CSS_PATH.read_text(encoding='utf-8')}</style>{extra}", unsafe_allow_html=True)
+        st.markdown(f"<style>{CSS_PATH.read_text(encoding='utf-8')}</style>", unsafe_allow_html=True)
 
 
 def pct(prob: float, digits: int = 1) -> str:
