@@ -3,6 +3,7 @@ from __future__ import annotations
 from html import escape
 from io import BytesIO
 from pathlib import Path
+import base64
 
 import joblib
 import pandas as pd
@@ -14,6 +15,7 @@ from model_pipeline import MODEL_FEATURES  # noqa: F401
 APP_DIR = Path(__file__).resolve().parent
 MODEL_PATH = APP_DIR / "model" / "mp_rf_model.joblib"
 CSS_PATH = APP_DIR / "assets" / "style.css"
+BG_PATH = APP_DIR / "assets" / "warm_breast_background.png"
 SAMPLE_CSV_PATH = APP_DIR / "sample_input.csv"
 SAMPLE_XLSX_PATH = APP_DIR / "sample_input.xlsx"
 
@@ -32,8 +34,12 @@ def load_artifact():
 
 
 def load_css() -> None:
+    extra = ""
+    if BG_PATH.exists():
+        bg_b64 = base64.b64encode(BG_PATH.read_bytes()).decode("utf-8")
+        extra = f"""<style>:root{{--warm-bg:url('data:image/png;base64,{bg_b64}');}}</style>"""
     if CSS_PATH.exists():
-        st.markdown(f"<style>{CSS_PATH.read_text(encoding='utf-8')}</style>", unsafe_allow_html=True)
+        st.markdown(f"<style>{CSS_PATH.read_text(encoding='utf-8')}</style>{extra}", unsafe_allow_html=True)
 
 
 def pct(prob: float, digits: int = 1) -> str:
@@ -124,55 +130,48 @@ def html_kv(label: str, value: str, accent: bool = False) -> str:
 def render_header() -> None:
     st.markdown(
         """
-        <div class="top-ambient">
-          <div class="ambient-line"></div>
-          <div class="ambient-dots">
-            <span>MRI</span><span>ADC</span><span>IHC</span><span>MP 4–5</span><span>疗效预测</span>
-          </div>
-        </div>
-        <header class="cn-nav">
-          <div class="brand-wrap">
-            <div class="brand-mark">MP</div>
-            <div class="brand-text"><strong>乳腺癌疗效预测系统</strong><span>治疗前多模态特征智能计算</span></div>
-          </div>
-          <nav>
-            <a href="#calculator">单病例预测</a>
-            <a href="#batch">批量预测</a>
-            <a href="#guide">模型说明</a>
-            <a href="#boundary">使用边界</a>
-          </nav>
-        </header>
+        <div class="warm-page-shell">
+          <header class="warm-nav">
+            <div class="warm-brand">
+              <div class="brand-mark">MP</div>
+              <div class="brand-text"><strong>乳腺癌疗效预测系统</strong><span>温馨医学看板 · 治疗前特征计算</span></div>
+            </div>
+            <nav>
+              <a href="#calculator">单病例预测</a>
+              <a href="#batch">批量预测</a>
+              <a href="#guide">模型说明</a>
+              <a href="#boundary">使用边界</a>
+            </nav>
+          </header>
         """,
         unsafe_allow_html=True,
     )
 
-
 def render_hero() -> None:
     st.markdown(
         """
-        <section class="cn-hero">
-          <div>
-            <span class="system-chip">医学研究型预测计算器</span>
+        <section class="warm-hero">
+          <div class="hero-main-copy">
+            <span class="system-chip">医学研究型智能计算器</span>
             <h1>乳腺癌 Miller–Payne 良好反应预测系统</h1>
-            <p>基于治疗前临床特征、MRI影像特征及免疫组化指标，评估 MP 4–5 级良好病理反应概率。</p>
-            <div class="hero-badges">
+            <p>基于治疗前临床特征、MRI 影像特征及免疫组化指标，评估 MP 4–5 级良好病理反应概率。</p>
+            <div class="hero-badges warm-badges">
               <span><i>🎯</i><b>终点事件</b>MP 4–5</span>
-              <span><i>🧲</i><b>输入维度</b>MRI / IHC / 临床特征</span>
-              <span><i>📊</i><b>输出形式</b>个体化概率</span>
-              <span><i>🔬</i><b>使用场景</b>科研辅助</span>
+              <span><i>🧬</i><b>输入维度</b>临床 / MRI / 免疫组化</span>
+              <span><i>📈</i><b>输出形式</b>个体化概率</span>
+              <span><i>🌸</i><b>界面风格</b>温馨医学看板</span>
             </div>
           </div>
-          <div class="hero-panel">
+          <div class="hero-panel warm-flow-panel">
             <div class="hero-panel-title">计算流程</div>
-            <div class="hero-step"><span>1</span><b>录入治疗前特征</b><em>临床、MRI、免疫组化</em></div>
-            <div class="hero-step"><span>2</span><b>生成个体化概率</b><em>MP 4–5 良好反应概率</em></div>
+            <div class="hero-step"><span>1</span><b>录入治疗前特征</b><em>年龄、MRI、免疫组化</em></div>
+            <div class="hero-step"><span>2</span><b>生成个体化概率</b><em>模型即时计算 MP 4–5 概率</em></div>
             <div class="hero-step"><span>3</span><b>查看分层结论</b><em>低 / 中 / 高反应可能性</em></div>
           </div>
         </section>
         """,
         unsafe_allow_html=True,
     )
-
 
 def render_case_preview(values: dict) -> None:
     st.markdown(
@@ -285,7 +284,7 @@ def main() -> None:
     render_header()
     render_hero()
 
-    st.markdown('<div class="section-title" id="calculator"><span>核心功能</span><h2>单病例预测看板</h2><p>左侧输入治疗前特征，右侧实时同步病例概览并显示最终计算结果。</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-title warm-section-title" id="calculator"><span>核心功能</span><h2>单病例预测看板</h2><p>左侧录入治疗前特征，右侧以温馨医学 Dashboard 形式实时展示病例概览与预测结果。</p></div>', unsafe_allow_html=True)
 
     left, right = st.columns([1.32, 0.88], gap="large")
 
@@ -393,7 +392,7 @@ def main() -> None:
                 st.error(f"批量预测失败：{exc}")
 
     render_feature_docs()
-    st.markdown('<footer class="cn-footer">本系统仅供科研和模型展示使用，不替代临床诊断、治疗决策或多学科会诊意见。</footer>', unsafe_allow_html=True)
+    st.markdown('<footer class="cn-footer">本系统仅供科研和模型展示使用，不替代临床诊断、治疗决策或多学科会诊意见。</footer></div>', unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
