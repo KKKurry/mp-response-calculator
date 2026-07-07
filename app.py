@@ -142,25 +142,23 @@ def render_top_nav() -> None:
 def render_hero() -> None:
     st.markdown(
         """
-        <section class="hero feature-hero">
+        <section class="hero feature-hero compact-hero">
           <div class="hero-main">
-            <div class="journal-label">Research-use clinical prediction calculator</div>
-            <h1>输入治疗前特征，<br><span>预测MP 4–5良好反应概率</span></h1>
+            <div class="journal-label">Web-based clinical prediction calculator</div>
+            <h1>MRI–IHC MP Response Calculator</h1>
             <p class="hero-lead">
-              本网页聚焦一个核心功能：逐项输入患者临床、MRI和免疫组化特征，
-              模型即时输出 Miller–Payne 4–5级良好病理反应的个体化概率与分层解释。
+              基于治疗前临床资料、MRI特征和免疫组化指标，估计乳腺癌新辅助治疗后
+              Miller–Payne 4–5级良好病理反应的个体化概率。
             </p>
-            <div class="hero-cta-row">
-              <a class="btn-primary" href="#calculator">进入特征预测</a>
-              <a class="btn-ghost" href="#guide">查看变量说明</a>
+            <div class="hero-tags">
+              <span>Pre-treatment MRI</span><span>IHC biomarkers</span><span>Single-case probability</span>
             </div>
           </div>
-          <div class="hero-panel calculator-map">
-            <div class="panel-caption">Prediction workflow</div>
-            <div class="workflow-line"><b>1</b><span>输入年龄、MRI和IHC特征</span></div>
-            <div class="workflow-line"><b>2</b><span>点击 Calculate probability</span></div>
-            <div class="workflow-line"><b>3</b><span>获得MP 4–5概率与分层</span></div>
-            <div class="workflow-line"><b>4</b><span>导出或记录单病例结果</span></div>
+          <div class="hero-panel mini-protocol">
+            <div class="panel-caption">Clinical workflow</div>
+            <div class="mini-step"><b>01</b><span>Feature input</span></div>
+            <div class="mini-step"><b>02</b><span>Probability estimation</span></div>
+            <div class="mini-step"><b>03</b><span>Likelihood stratification</span></div>
           </div>
         </section>
         """,
@@ -170,41 +168,80 @@ def render_hero() -> None:
 
 def render_input_form() -> tuple[bool, dict]:
     st.markdown("<a id='calculator'></a>", unsafe_allow_html=True)
-    st.markdown("<div class='section-heading'><span>01</span><h2>Feature input calculator</h2></div>", unsafe_allow_html=True)
     st.markdown(
-        "<p class='section-lead'>逐项录入治疗前可获得变量。点击预测后，右侧将显示MP 4–5良好反应概率、可能性分层和模型预测组别。</p>",
+        """
+        <div class="calculator-input-head">
+          <div>
+            <div class="eyebrow">Single-case feature input</div>
+            <h2>单病例预测 / Individual calculator</h2>
+            <p>请按临床、MRI和IHC三个模块录入治疗前可获得特征。分类变量采用选择式输入，连续变量采用数值框，减少误填。</p>
+          </div>
+          <div class="input-head-badges">
+            <span>Clinical</span><span>MRI</span><span>IHC</span>
+          </div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
     with st.form("feature_prediction_form", clear_on_submit=False):
-        st.markdown("<div class='form-panel-title'>Clinical profile</div>", unsafe_allow_html=True)
-        c1, c2, c3 = st.columns(3)
+        st.markdown(
+            """
+            <div class="domain-title clinical-domain">
+              <b>01</b><div><strong>Clinical profile</strong><span>基本临床信息</span></div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        c1, c2, c3 = st.columns(3, gap="medium")
         with c1:
-            age = st.number_input("年龄 / Age", min_value=18, max_value=95, value=52, step=1)
+            age = st.number_input("年龄 / Age", min_value=18, max_value=95, value=52, step=1, help="输入患者治疗前年龄，单位：岁。")
         with c2:
-            tumor_size = st.number_input("肿瘤最大径 / Tumor size, cm", min_value=0.10, max_value=12.00, value=2.80, step=0.10, format="%.2f")
+            tumor_size = st.number_input("肿瘤最大径 / Tumor size, cm", min_value=0.10, max_value=12.00, value=2.80, step=0.10, format="%.2f", help="输入治疗前肿瘤最大径，单位：cm。")
         with c3:
-            adc = st.number_input("ADC值 / ADC value", min_value=0.10, max_value=3.00, value=0.95, step=0.01, format="%.3f")
+            adc = st.number_input("ADC值 / ADC value", min_value=0.10, max_value=3.00, value=0.95, step=0.01, format="%.3f", help="输入治疗前ADC值。")
 
-        st.markdown("<div class='form-panel-title'>MRI domain</div>", unsafe_allow_html=True)
-        m1, m2 = st.columns(2)
+        st.markdown(
+            """
+            <div class="domain-title mri-domain">
+              <b>02</b><div><strong>MRI domain</strong><span>治疗前影像特征</span></div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        m1, m2 = st.columns([0.42, 0.58], gap="large")
         with m1:
-            calcification = st.radio("钙化 / Calcification", ["有", "无"], horizontal=True)
+            calcification = st.radio("钙化 / Calcification", ["有", "无"], horizontal=True, help="根据治疗前影像或报告选择是否存在钙化。")
         with m2:
-            curve = st.selectbox("DCE-MRI动态增强曲线 / Kinetic curve", ["流出", "平台", "持续", "未知"], index=0)
+            curve = st.radio("DCE-MRI动态增强曲线 / Kinetic curve", ["流出", "平台", "持续", "未知"], horizontal=True, help="请选择治疗前DCE-MRI增强曲线类型。")
 
-        st.markdown("<div class='form-panel-title'>Immunohistochemistry domain</div>", unsafe_allow_html=True)
-        i1, i2, i3, i4 = st.columns(4)
+        st.markdown(
+            """
+            <div class="domain-title ihc-domain">
+              <b>03</b><div><strong>Immunohistochemistry domain</strong><span>免疫组化指标</span></div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        i1, i2, i3, i4 = st.columns(4, gap="medium")
         with i1:
-            er = st.slider("ER, %", min_value=0, max_value=100, value=10, step=1)
+            er = st.number_input("ER, %", min_value=0, max_value=100, value=10, step=1, help="输入ER阳性比例，0–100%。")
         with i2:
-            pr = st.slider("PR, %", min_value=0, max_value=100, value=5, step=1)
+            pr = st.number_input("PR, %", min_value=0, max_value=100, value=5, step=1, help="输入PR阳性比例，0–100%。")
         with i3:
-            her2 = st.select_slider("HER2 score", options=["0", "1+", "2+", "3+"], value="3+")
+            her2 = st.selectbox("HER2 score", options=["0", "1+", "2+", "3+"], index=3, help="选择HER2免疫组化评分。")
         with i4:
-            ki67 = st.slider("Ki-67, %", min_value=0, max_value=100, value=70, step=1)
+            ki67 = st.number_input("Ki-67, %", min_value=0, max_value=100, value=70, step=1, help="输入Ki-67指数，0–100%。")
 
-        st.markdown("<div class='submit-spacer'></div>", unsafe_allow_html=True)
+        st.markdown(
+            """
+            <div class="input-quality-note">
+              <span>Input check</span>
+              <p>请确认所有变量均为治疗前可获得信息；治疗后MRI、治疗后病理和MP原始分级不应作为输入。</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         submitted = st.form_submit_button("Calculate probability / 计算MP 4–5概率", type="primary", use_container_width=True)
 
     values = {
@@ -219,7 +256,6 @@ def render_input_form() -> tuple[bool, dict]:
         "ki67": ki67,
     }
     return submitted, values
-
 
 def render_result_card(prob: float, threshold: float, single_df: pd.DataFrame) -> None:
     predicted = "MP 4–5" if prob >= threshold else "MP 1–3"
