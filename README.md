@@ -1,36 +1,24 @@
-# MRI–IHC MP Response Calculator · v9 Balanced Enriched
+# 乳腺癌 MP 良好反应预测系统
 
-A Streamlit web calculator for estimating favorable Miller–Payne 4–5 response using pre-treatment clinical, MRI and IHC features.
+这是中文 Dashboard 版网页计算器，用于基于治疗前临床特征、MRI影像特征和免疫组化指标估计 Miller–Payne 4–5 级良好病理反应概率。
 
-## v9 design changes
+## 本版视觉特点
 
-- Balanced laboratory web-server style inspired by bioinformatics tool portals.
-- Less cramped than v8, but with reduced empty space compared with v7.
-- Enriched content blocks: clinical question, feature scope, result format and research-use boundary.
-- Improved feature-input form with section labels, explanatory notes and input help.
-- Right-side interpretation panel added to make the page more informative.
+- 纯中文医学界面
+- 左侧输入表单，右侧实时病例概览与结果看板
+- 大字号概率结果展示
+- 渐变概率进度条
+- 低 / 中 / 高反应可能性标签
+- 轻量化输入组件与软阴影卡片
+- 支持单病例预测与批量预测
 
-## Run locally
+## 本地运行
 
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## Deploy
+## 部署
 
-Upload the visible files and folders to the root of your GitHub repository, then reboot the Streamlit app.
-
-Required root structure:
-
-```text
-app.py
-model_pipeline.py
-requirements.txt
-assets/
-docs/
-model/
-sample_input.csv
-sample_input.xlsx
-README.md
-```
+上传本文件夹内所有可见内容到 GitHub 仓库根目录，并在 Streamlit Cloud 中部署 `app.py`。
