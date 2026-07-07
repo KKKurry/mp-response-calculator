@@ -188,13 +188,13 @@ def render_hero() -> None:
         '''
         <section class="gq-hero" id="home">
           <span class="gq-new">New</span>
-          <h1>MRI–IHC MP Response Calculator &<br/>Miller–Payne Prediction System</h1>
-          <p>Professional pre-treatment feature analysis platform for estimating favorable pathological response in breast cancer.</p>
+          <h1>MRI–IHC MP Response Calculator<br/>Miller–Payne Prediction System</h1>
+          <p>Pre-treatment clinical, MRI and immunohistochemical feature analysis for estimating favorable pathological response in breast cancer.</p>
         </section>
         <div class="gq-tabs">
           <a class="active" href="#calculator">📊 Parameter Calculation</a>
           <a href="#calculator">🔎 Feature Input</a>
-          <a href="#guide">📈 Model Interpretation</a>
+          <a href="#guide">📈 Model Guide</a>
           <a href="#batch">🧬 Batch Prediction</a>
         </div>
         <div class="gq-live-card">
@@ -247,7 +247,7 @@ def render_input_controls() -> tuple[bool, dict]:
         with c9:
             ki67 = st.number_input("Ki-67, %", min_value=0, max_value=100, value=70, step=1)
 
-        submitted = st.form_submit_button("Calculate Forensic-like Response Parameters  /  计算MP 4–5概率", use_container_width=True)
+        submitted = st.form_submit_button("Calculate MP 4–5 Probability  /  计算MP 4–5概率", use_container_width=True)
 
     values = {
         "age": age,
@@ -389,7 +389,7 @@ def main() -> None:
     render_portal_nav()
     render_hero()
 
-    left, right = st.columns([1.35, 1], gap="large")
+    left, right = st.columns([1.48, 0.92], gap="medium")
     with left:
         submitted, values = render_input_controls()
     with right:
