@@ -19,7 +19,7 @@ SAMPLE_CSV_PATH = APP_DIR / "sample_input.csv"
 SAMPLE_XLSX_PATH = APP_DIR / "sample_input.xlsx"
 
 st.set_page_config(
-    page_title="MP Response Prediction System",
+    page_title="MRI–IHC MP Response Calculator",
     page_icon="MP",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -46,20 +46,20 @@ def probability_tier(prob: float) -> tuple[str, str, str, str]:
         return (
             "Low likelihood",
             "MP 4–5良好反应可能性较低",
-            "建议结合影像复核、病理信息和完整治疗方案进行综合判断。",
+            "该结果提示良好病理反应倾向较弱，建议结合影像复核、病理信息、治疗方案和MDT意见综合判断。",
             "tier-low",
         )
     if prob < 0.70:
         return (
             "Intermediate likelihood",
             "MP 4–5良好反应可能性中等",
-            "建议在MDT语境下解释该结果，并关注MRI与IHC信息的一致性。",
+            "该结果处于中间区间，建议重点关注MRI动态增强曲线、ADC与IHC指标之间是否存在一致性。",
             "tier-mid",
         )
     return (
         "High likelihood",
         "MP 4–5良好反应可能性较高",
-        "提示该患者可能存在较好的治疗反应倾向，但仍需结合临床证据链。",
+        "该结果提示患者可能具有较好的治疗反应倾向，但仍需结合临床证据链进行最终判断。",
         "tier-high",
     )
 
@@ -122,41 +122,40 @@ def render_top_science_art() -> None:
     st.markdown(
         r'''
         <div class="gq-science-art" aria-label="scientific illustration banner">
-          <svg viewBox="0 0 1500 190" preserveAspectRatio="none">
+          <svg viewBox="0 0 1600 180" preserveAspectRatio="none">
             <defs>
-              <linearGradient id="blue" x1="0" x2="1"><stop stop-color="#1d4ed8"/><stop offset="1" stop-color="#06b6d4"/></linearGradient>
+              <linearGradient id="blue" x1="0" x2="1"><stop stop-color="#2563eb"/><stop offset="1" stop-color="#06b6d4"/></linearGradient>
               <linearGradient id="green" x1="0" x2="1"><stop stop-color="#bef264"/><stop offset="1" stop-color="#84cc16"/></linearGradient>
-              <linearGradient id="purple" x1="0" x2="1"><stop stop-color="#c4b5fd"/><stop offset="1" stop-color="#7c3aed"/></linearGradient>
-              <filter id="softShadow"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-opacity="0.18"/></filter>
+              <linearGradient id="purple" x1="0" x2="1"><stop stop-color="#ddd6fe"/><stop offset="1" stop-color="#7c3aed"/></linearGradient>
             </defs>
-            <rect width="1500" height="190" fill="#f4f0e6"/>
-            <path d="M10,70 C85,5 150,142 235,68 S388,56 485,98 S640,136 745,78 S916,21 1026,88 S1202,103 1320,56 S1430,42 1490,72" fill="none" stroke="#c2bfb4" stroke-width="2" opacity=".7"/>
-            <path d="M24,74 C96,25 155,128 239,78 S388,74 481,112 S638,125 746,90 S914,40 1027,101 S1205,116 1321,70 S1438,55 1485,88" fill="none" stroke="url(#blue)" stroke-width="11" stroke-linecap="round"/>
-            <path d="M25,103 C96,55 155,154 239,105 S388,100 481,137 S638,151 746,117 S914,68 1027,127 S1205,144 1321,98 S1438,86 1485,118" fill="none" stroke="#0f766e" stroke-width="5" stroke-linecap="round" opacity=".85"/>
+            <rect width="1600" height="180" fill="#f4f0e6"/>
+            <path d="M20,68 C110,5 185,142 288,70 S468,49 578,101 S760,137 892,76 S1088,24 1228,89 S1430,102 1570,61" fill="none" stroke="#c9c3b6" stroke-width="2" opacity=".75"/>
+            <path d="M26,78 C116,31 188,130 292,82 S468,69 574,115 S760,126 892,92 S1086,48 1228,104 S1434,118 1568,88" fill="none" stroke="url(#blue)" stroke-width="10" stroke-linecap="round"/>
+            <path d="M26,104 C116,57 188,154 292,108 S468,99 574,139 S760,151 892,119 S1086,78 1228,131 S1434,147 1568,118" fill="none" stroke="#0f766e" stroke-width="4" stroke-linecap="round" opacity=".85"/>
             <g class="art-labels">
-              <text x="78" y="38" transform="rotate(-14 78 38)">MRI</text>
-              <text x="195" y="36" transform="rotate(-18 195 36)">IHC</text>
-              <text x="358" y="50" transform="rotate(-25 358 50)">ADC</text>
-              <text x="630" y="42" transform="rotate(-9 630 42)">response</text>
-              <text x="1186" y="44" transform="rotate(12 1186 44)">MP 4–5</text>
+              <text x="76" y="40" transform="rotate(-13 76 40)">MRI</text>
+              <text x="226" y="38" transform="rotate(-17 226 38)">IHC</text>
+              <text x="396" y="52" transform="rotate(-24 396 52)">ADC</text>
+              <text x="705" y="43" transform="rotate(-8 705 43)">response</text>
+              <text x="1250" y="46" transform="rotate(10 1250 46)">MP 4–5</text>
             </g>
-            <g transform="translate(210 36)" filter="url(#softShadow)">
-              <path d="M0 34 C25 -18 82 -19 106 22 C133 64 100 108 57 106 C18 105 -17 72 0 34Z" fill="url(#green)" stroke="#334155" stroke-width="1.5"/>
-              <path d="M19 82 C38 30 74 84 96 26" stroke="#365314" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <g transform="translate(232 37)">
+              <path d="M0 34 C26 -18 82 -18 108 22 C136 64 101 108 58 106 C18 105 -18 72 0 34Z" fill="url(#green)" stroke="#334155" stroke-width="1.5"/>
+              <path d="M19 82 C38 30 75 84 98 26" stroke="#365314" stroke-width="6" fill="none" stroke-linecap="round"/>
             </g>
-            <g transform="translate(690 77)">
-              <circle cx="0" cy="0" r="22" fill="url(#purple)" stroke="#334155"/><circle cx="54" cy="0" r="22" fill="url(#purple)" stroke="#334155"/>
-              <circle cx="108" cy="0" r="22" fill="url(#purple)" stroke="#334155"/><circle cx="162" cy="0" r="22" fill="url(#purple)" stroke="#334155"/>
-              <path d="M-24 30 C36 56 104 56 190 30" stroke="#64748b" fill="none" stroke-width="2"/>
+            <g transform="translate(760 76)">
+              <circle cx="0" cy="0" r="21" fill="url(#purple)" stroke="#334155"/><circle cx="56" cy="0" r="21" fill="url(#purple)" stroke="#334155"/>
+              <circle cx="112" cy="0" r="21" fill="url(#purple)" stroke="#334155"/><circle cx="168" cy="0" r="21" fill="url(#purple)" stroke="#334155"/>
+              <path d="M-24 30 C44 57 114 57 198 30" stroke="#64748b" fill="none" stroke-width="2"/>
             </g>
-            <g transform="translate(955 58)" opacity=".95">
+            <g transform="translate(1030 61)" opacity=".95">
               <g fill="#c4b5fd" stroke="#334155" stroke-width="1">
-                <circle cx="0" cy="22" r="16"/><circle cx="32" cy="12" r="15"/><circle cx="64" cy="18" r="16"/><circle cx="96" cy="8" r="14"/>
-                <circle cx="128" cy="16" r="15"/><circle cx="160" cy="23" r="16"/><circle cx="192" cy="13" r="15"/>
+                <circle cx="0" cy="22" r="16"/><circle cx="35" cy="12" r="15"/><circle cx="70" cy="18" r="16"/><circle cx="105" cy="8" r="14"/>
+                <circle cx="140" cy="16" r="15"/><circle cx="175" cy="23" r="16"/><circle cx="210" cy="13" r="15"/>
               </g>
-              <path d="M-12 54 L206 54" stroke="#14b8a6" stroke-width="5" stroke-linecap="round" opacity=".75"/>
+              <path d="M-14 54 L226 54" stroke="#14b8a6" stroke-width="5" stroke-linecap="round" opacity=".75"/>
             </g>
-            <g transform="translate(1280 42)">
+            <g transform="translate(1370 42)">
               <path d="M50 0 C134 22 114 99 56 109 C-6 120 -28 52 50 0Z" fill="none" stroke="#2563eb" stroke-width="3"/>
               <path d="M20 34 C82 -2 130 45 86 92 C50 130 -24 91 20 34Z" fill="none" stroke="#7c3aed" stroke-width="3" opacity=".9"/>
               <path d="M24 91 C78 22 126 78 41 23" fill="none" stroke="#0f766e" stroke-width="2" opacity=".8"/>
@@ -186,24 +185,54 @@ def render_portal_nav() -> None:
 def render_hero() -> None:
     st.markdown(
         '''
-        <section class="gq-hero" id="home">
-          <span class="gq-new">New</span>
-          <h1>MRI–IHC MP Response Calculator<br/>Miller–Payne Prediction System</h1>
-          <p>Pre-treatment clinical, MRI and immunohistochemical feature analysis for estimating favorable pathological response in breast cancer.</p>
+        <section class="gq-hero balanced" id="home">
+          <div class="hero-main">
+            <span class="gq-new">Research-use web calculator</span>
+            <h1>MRI–IHC MP Response Calculator<br/>Miller–Payne Prediction System</h1>
+            <p>Pre-treatment clinical, MRI and immunohistochemical feature analysis for estimating favorable pathological response in breast cancer.</p>
+          </div>
+          <div class="hero-panel">
+            <div><span>Endpoint</span><b>MP 4–5 favorable response</b></div>
+            <div><span>Input modalities</span><b>Clinical + MRI + IHC</b></div>
+            <div><span>Output</span><b>Individualized probability estimate</b></div>
+          </div>
         </section>
-        <div class="gq-tabs">
+        <div class="gq-tabs balanced-tabs">
           <a class="active" href="#calculator">📊 Parameter Calculation</a>
-          <a href="#calculator">🔎 Feature Input</a>
-          <a href="#guide">📈 Model Guide</a>
+          <a href="#feature-notes">🔎 Feature Notes</a>
+          <a href="#guide">📈 Interpretation Guide</a>
           <a href="#batch">🧬 Batch Prediction</a>
-        </div>
-        <div class="gq-live-card">
-          <div><i></i><b>Online</b><span>Running</span></div>
-          <div><i class="orange"></i><b>9</b><span>Variables</span></div>
-          <div><i class="purple"></i><b>MP</b><span>Endpoint</span></div>
         </div>
         ''',
         unsafe_allow_html=True,
+    )
+
+
+def render_research_summary() -> None:
+    st.markdown(
+        '''
+        <div class="summary-grid">
+          <div class="summary-card"><small>Clinical question</small><b>能否在治疗前预测MP 4–5良好病理反应？</b><span>用于辅助研究分层与模型转化展示。</span></div>
+          <div class="summary-card"><small>Feature scope</small><b>9项治疗前可获得变量</b><span>年龄、肿瘤大小、ADC、钙化、DCE曲线、ER、PR、HER2、Ki-67。</span></div>
+          <div class="summary-card"><small>Result format</small><b>概率 + 分层 + 预测组别</b><span>输出个体化MP 4–5概率，并标记低/中/高可能性。</span></div>
+          <div class="summary-card"><small>Use boundary</small><b>Research-use only</b><span>仅供科研与展示，不替代MDT和临床治疗决策。</span></div>
+        </div>
+        ''', unsafe_allow_html=True
+    )
+
+
+def render_feature_notes() -> None:
+    st.markdown(
+        '''
+        <div class="feature-notes" id="feature-notes">
+          <div class="note-title"><span>Feature Dictionary</span><b>变量录入说明</b></div>
+          <div class="note-grid">
+            <div><b>Clinical profile</b><p>年龄与肿瘤最大径反映患者基础状态和病灶负荷。</p></div>
+            <div><b>MRI domain</b><p>ADC、钙化和DCE-MRI动态增强曲线用于描述影像表型。</p></div>
+            <div><b>IHC biomarkers</b><p>ER、PR、HER2和Ki-67反映肿瘤生物学行为和增殖活性。</p></div>
+          </div>
+        </div>
+        ''', unsafe_allow_html=True
     )
 
 
@@ -211,32 +240,34 @@ def render_input_controls() -> tuple[bool, dict]:
     st.markdown('<a id="calculator"></a>', unsafe_allow_html=True)
     st.markdown(
         '''
-        <div class="section-heading">
+        <div class="section-heading spacious">
           <div class="heading-icon">▦</div>
-          <div><h2>Online Calculation</h2><p>逐项输入患者治疗前可获得变量，系统即时计算MP 4–5良好反应概率。</p></div>
+          <div><h2>Online Calculation</h2><p>逐项输入治疗前特征，点击计算后输出MP 4–5良好病理反应概率、可能性分层和模型预测组别。</p></div>
         </div>
         ''',
         unsafe_allow_html=True,
     )
 
     with st.form("single_case_form", clear_on_submit=False):
-        st.markdown('<div class="form-pill">Clinical profile</div>', unsafe_allow_html=True)
-        c1, c2, c3 = st.columns(3, gap="medium")
+        st.markdown('<div class="form-section-title"><span>01</span><b>Clinical profile</b><em>基础临床与病灶负荷</em></div>', unsafe_allow_html=True)
+        c1, c2, c3 = st.columns(3, gap="large")
         with c1:
-            age = st.number_input("Age / 年龄", min_value=18, max_value=95, value=52, step=1)
+            age = st.number_input("Age / 年龄", min_value=18, max_value=95, value=52, step=1, help="患者治疗前年龄。")
         with c2:
-            tumor_size = st.number_input("Tumor size, cm / 肿瘤最大径", min_value=0.10, max_value=12.00, value=2.80, step=0.10, format="%.2f")
+            tumor_size = st.number_input("Tumor size, cm / 肿瘤最大径", min_value=0.10, max_value=12.00, value=2.80, step=0.10, format="%.2f", help="治疗前MRI或临床记录中的病灶最大径。")
         with c3:
-            adc = st.number_input("ADC value / ADC值", min_value=0.10, max_value=3.00, value=0.95, step=0.01, format="%.3f")
+            adc = st.number_input("ADC value / ADC值", min_value=0.10, max_value=3.00, value=0.95, step=0.01, format="%.3f", help="治疗前MRI ADC值。")
 
-        st.markdown('<div class="form-pill">MRI domain</div>', unsafe_allow_html=True)
-        c4, c5 = st.columns([1, 1.4], gap="large")
+        st.markdown('<div class="form-divider"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="form-section-title"><span>02</span><b>MRI domain</b><em>治疗前影像表型</em></div>', unsafe_allow_html=True)
+        c4, c5 = st.columns([0.95, 1.35], gap="large")
         with c4:
-            calcification = st.radio("Calcification / 钙化", ["有", "无"], horizontal=True)
+            calcification = st.radio("Calcification / 钙化", ["有", "无"], horizontal=True, help="病灶内是否存在钙化描述。")
         with c5:
-            curve = st.selectbox("DCE-MRI kinetic curve / 动态增强曲线", ["流出", "平台", "持续", "未知 / Not available"], index=0)
+            curve = st.selectbox("DCE-MRI kinetic curve / 动态增强曲线", ["流出", "平台", "持续", "未知 / Not available"], index=0, help="动态增强曲线类型。")
 
-        st.markdown('<div class="form-pill">Immunohistochemistry domain</div>', unsafe_allow_html=True)
+        st.markdown('<div class="form-divider"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="form-section-title"><span>03</span><b>Immunohistochemistry domain</b><em>治疗前免疫组化指标</em></div>', unsafe_allow_html=True)
         c6, c7, c8, c9 = st.columns(4, gap="medium")
         with c6:
             er = st.number_input("ER, %", min_value=0, max_value=100, value=10, step=1)
@@ -247,6 +278,7 @@ def render_input_controls() -> tuple[bool, dict]:
         with c9:
             ki67 = st.number_input("Ki-67, %", min_value=0, max_value=100, value=70, step=1)
 
+        st.markdown('<div class="form-footnote">请仅输入治疗前即可获得的信息；治疗后MRI、术后病理或任何直接反映MP结局的变量不应输入。</div>', unsafe_allow_html=True)
         submitted = st.form_submit_button("Calculate MP 4–5 Probability  /  计算MP 4–5概率", use_container_width=True)
 
     values = {
@@ -275,11 +307,27 @@ def render_current_values(values: dict) -> None:
         ("HER2", str(values["her2"])),
         ("Ki-67", f"{values['ki67']}%"),
     ]
-    html = '<div class="side-card"><h3>Current Input Profile</h3><p>输入变量实时概览</p><div class="mini-table">'
+    html = '<div class="side-card input-profile"><div class="card-eyebrow">Current input</div><h3>Current Input Profile</h3><p>输入变量实时概览，用于核对本次单病例预测参数。</p><div class="mini-table">'
     for k, v in rows:
         html += f"<div><span>{k}</span><b>{v}</b></div>"
     html += "</div></div>"
     st.markdown(html, unsafe_allow_html=True)
+
+
+def render_interpretation_panel() -> None:
+    st.markdown(
+        '''
+        <div class="interpret-panel">
+          <h3>Clinical interpretation</h3>
+          <p>模型输出的是MP 4–5良好反应的概率估计，而不是确定性诊断。建议结合MRI复核、IHC一致性、治疗方案和MDT意见解释。</p>
+          <ul>
+            <li><b>Low:</b> 良好反应可能性偏低</li>
+            <li><b>Intermediate:</b> 需结合多模态证据综合判断</li>
+            <li><b>High:</b> 良好病理反应倾向较高</li>
+          </ul>
+        </div>
+        ''', unsafe_allow_html=True
+    )
 
 
 def render_prediction(prob: float, threshold: float) -> None:
@@ -307,11 +355,11 @@ def render_empty_result() -> None:
         '''
         <div class="result-card empty-result">
           <div class="result-kicker">Calculation Results</div>
-          <h3>Waiting for feature input</h3>
+          <h3>Awaiting calculation</h3>
           <p>完成左侧变量录入并点击计算后，此处将显示MP 4–5概率、可能性分层和模型预测组别。</p>
-          <div class="empty-steps"><span>1</span> Input features</div>
-          <div class="empty-steps"><span>2</span> Run calculator</div>
-          <div class="empty-steps"><span>3</span> Export result</div>
+          <div class="empty-steps"><span>1</span> Input pre-treatment features</div>
+          <div class="empty-steps"><span>2</span> Calculate individualized probability</div>
+          <div class="empty-steps"><span>3</span> Export single-case result</div>
         </div>
         ''',
         unsafe_allow_html=True,
@@ -332,7 +380,7 @@ def render_batch(model, metadata) -> None:
     st.markdown('<a id="batch"></a>', unsafe_allow_html=True)
     st.markdown(
         '''
-        <div class="section-heading compact"><div class="heading-icon">⇧</div><div><h2>Batch Prediction</h2><p>上传CSV或Excel，批量输出MP 4–5预测概率。</p></div></div>
+        <div class="section-heading compact"><div class="heading-icon">⇧</div><div><h2>Batch Prediction</h2><p>上传CSV或Excel，批量输出MP 4–5预测概率，并导出结果表格。</p></div></div>
         ''', unsafe_allow_html=True)
     uploaded = st.file_uploader("Upload patient table / 上传患者表格", type=["csv", "xlsx", "xls"], key="batch_upload")
     c1, c2 = st.columns(2)
@@ -369,12 +417,13 @@ def render_guide() -> None:
     st.markdown('<a id="guide"></a>', unsafe_allow_html=True)
     st.markdown(
         '''
-        <div class="guide-grid">
-          <div class="guide-card"><h3>Supported Input Features</h3><p>Clinical profile, MRI morphology / kinetic descriptors and IHC biomarkers available before treatment.</p></div>
-          <div class="guide-card"><h3>Model Output</h3><p>The output is an individualized probability estimate for Miller–Payne grade 4–5 pathological response.</p></div>
-          <div class="guide-card"><h3>Research-use Notice</h3><p>This prototype is intended for research and presentation only. It is not a standalone diagnostic or treatment decision device.</p></div>
+        <div class="guide-title"><span>Model documentation</span><h2>How to use and interpret this calculator</h2></div>
+        <div class="guide-grid enriched">
+          <div class="guide-card"><h3>1. Supported input features</h3><p>输入变量限定为治疗前可获得的临床资料、MRI特征和免疫组化指标，避免纳入治疗后信息。</p></div>
+          <div class="guide-card"><h3>2. Model output</h3><p>输出为MP 4–5良好病理反应的个体化概率估计，并给出低、中、高可能性分层。</p></div>
+          <div class="guide-card"><h3>3. Clinical boundary</h3><p>该网页为科研和展示用途，不构成独立诊断工具，也不替代临床医生或MDT决策。</p></div>
         </div>
-        <div id="contact" class="footer-note">© MP Response Prediction System · Research-use clinical calculator prototype</div>
+        <div id="contact" class="footer-note">© MP Response Prediction System · MRI–IHC research-use clinical calculator prototype</div>
         ''',
         unsafe_allow_html=True,
     )
@@ -388,10 +437,12 @@ def main() -> None:
     render_top_science_art()
     render_portal_nav()
     render_hero()
+    render_research_summary()
 
-    left, right = st.columns([1.48, 0.92], gap="medium")
+    left, right = st.columns([1.36, 1.0], gap="large")
     with left:
         submitted, values = render_input_controls()
+        render_feature_notes()
     with right:
         render_current_values(values)
         if submitted:
@@ -405,6 +456,7 @@ def main() -> None:
             render_download_single(single_out)
         else:
             render_empty_result()
+        render_interpretation_panel()
 
     with st.expander("Batch prediction / 批量预测", expanded=False):
         render_batch(model, metadata)

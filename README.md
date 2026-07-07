@@ -1,16 +1,36 @@
-# MRI–IHC MP Response Calculator — v8 Compact Lab Style
+# MRI–IHC MP Response Calculator · v9 Balanced Enriched
 
-This version uses a more compact laboratory web-server layout inspired by bioinformatics tool portals. Compared with v7, it reduces large blank areas by shortening the science banner, navigation bar, title banner, tab area, cards, and form spacing.
+A Streamlit web calculator for estimating favorable Miller–Payne 4–5 response using pre-treatment clinical, MRI and IHC features.
 
-## Main changes
+## v9 design changes
 
-- More compact top scientific illustration strip
-- Reduced hero height and tab spacing
-- Denser two-column calculator layout
-- Smaller right-side input preview and result cards
-- Tighter Clinical / MRI / IHC feature input spacing
-- Preserves single-case prediction, batch prediction, downloads, and model files
+- Balanced laboratory web-server style inspired by bioinformatics tool portals.
+- Less cramped than v8, but with reduced empty space compared with v7.
+- Enriched content blocks: clinical question, feature scope, result format and research-use boundary.
+- Improved feature-input form with section labels, explanatory notes and input help.
+- Right-side interpretation panel added to make the page more informative.
 
-## Deployment
+## Run locally
 
-Upload all visible files and folders to the GitHub repository root, then commit directly to `main` and reboot the Streamlit app.
+```bash
+pip install -r requirements.txt
+streamlit run app.py
+```
+
+## Deploy
+
+Upload the visible files and folders to the root of your GitHub repository, then reboot the Streamlit app.
+
+Required root structure:
+
+```text
+app.py
+model_pipeline.py
+requirements.txt
+assets/
+docs/
+model/
+sample_input.csv
+sample_input.xlsx
+README.md
+```
