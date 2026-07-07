@@ -1,0 +1,65 @@
+{
+  "model_name": "MP-RF Response Predictor",
+  "version": "1.0.0",
+  "endpoint": "Miller-Payne grade 4-5 response probability",
+  "negative_class": "MP grade 1-3 / non-favourable response",
+  "positive_class": "MP grade 4-5 / favourable response",
+  "n_samples": 187,
+  "class_distribution": {
+    "MP_1_3": 96,
+    "MP_4_5": 91
+  },
+  "features": [
+    "Age",
+    "Calcification",
+    "Curve_Washout",
+    "Curve_Plateau",
+    "ADC",
+    "Tumor_size_cm",
+    "ER_percent",
+    "PR_percent",
+    "HER2_score",
+    "Ki67_percent"
+  ],
+  "model_family": "Calibrated Random Forest",
+  "operating_threshold": 0.6443412613443592,
+  "oof_metrics": {
+    "auc": 0.8278388278388279,
+    "accuracy": 0.786096256684492,
+    "sensitivity": 0.6593406593406593,
+    "specificity": 0.90625,
+    "ppv": 0.8695652173913043,
+    "npv": 0.7372881355932204,
+    "f1": 0.75,
+    "brier": 0.16456833630990453,
+    "threshold": 0.6443412613443592,
+    "tn": 87,
+    "fp": 9,
+    "fn": 31,
+    "tp": 60,
+    "auc_ci95": [
+      0.7594882549870906,
+      0.8842063368636872
+    ]
+  },
+  "missing_rate": {
+    "Age": 0.0107,
+    "Calcification": 0.0,
+    "Curve_Washout": 0.0,
+    "Curve_Plateau": 0.0,
+    "ADC": 0.0053,
+    "Tumor_size_cm": 0.0,
+    "ER_percent": 0.0,
+    "PR_percent": 0.016,
+    "HER2_score": 0.0,
+    "Ki67_percent": 0.0321
+  },
+  "trained_at": "2026-07-01T09:02:16",
+  "intended_use": "Research-use clinical prediction prototype; not a standalone diagnostic device.",
+  "excluded_columns": [
+    "名字",
+    "检查日期",
+    "MP分级",
+    "分子分型"
+  ]
+}

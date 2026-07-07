@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乳腺癌多模态分型预测平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#f97316',
+                        accent: '#8b5cf6',
+                        neutral: '#f3f4f6',
+                        'neutral-dark': '#374151',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
+            .transition-custom {
+                transition: all 0.3s ease;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-neutral-dark">
+<header id="navbar" class="fixed w-full bg-white bg-opacity-95 shadow-md z-50 transition-all duration-300">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div class="flex items-center space-x-2">
+            <i class="fa fa-heartbeat text-primary text-2xl"></i>
+            <h1 class="text-xl font-bold text-primary">乳腺癌多模态分型预测平台</h1>
+        </div>
+        <nav class="hidden md:flex space-x-8">
+            <a href="#home" class="nav-link font-medium hover:text-primary transition-custom">首页</a>
+            <a href="#mp-prediction" class="nav-link font-medium hover:text-primary transition-custom">MP分级预测</a>
+            <a href="#molecular-typing" class="nav-link font-medium hover:text-primary transition-custom">分子分型</a>
+            <a href="#genomic-analysis" class="nav-link font-medium hover:text-primary transition-custom">基因组分析</a>
+            <a href="#about" class="nav-link font-medium hover:text-primary transition-custom">关于项目</a>
+        </nav>
+        <button id="menu-toggle" class="md:hidden text-neutral-dark focus:outline-none">
+            <i class="fa fa-bars text-xl"></i>
+        </button>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden bg-white border-t">
+        <div class="container mx-auto px-4 py-2 flex flex-col space-y-3">
+            <a href="#home" class="py-2 hover:text-primary transition-custom">首页</a>
+            <a href="#mp-prediction" class="py-2 hover:text-primary transition-custom">MP分级预测</a>
+            <a href="#molecular-typing" class="py-2 hover:text-primary transition-custom">分子分型</a>
+            <a href="#genomic-analysis" class="py-2 hover:text-primary transition-custom">基因组分析</a>
+            <a href="#about" class="py-2 hover:text-primary transition-custom">关于项目</a>
+        </div>
+    </div>
+</header>
+
+<section id="home" class="pt-24 pb-16 bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 mb-10 md:mb-0">
+                <h2 class="text-[clamp(2rem,5vw,3.5rem)] font-bold leading-tight text-neutral-dark mb-4">
+                    乳腺癌精准分型预测
+                </h2>
+                <p class="text-lg text-gray-600 mb-8 max-w-lg">
+                    整合临床特征、影像数据与基因组信息，提供精准的MP分级和分子分型预测，辅助临床决策与研究。
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#mp-prediction" class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg font-medium transition-custom shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        开始预测 <i class="fa fa-arrow-right ml-2"></i>
+                    </a>
+                    <a href="#about" class="bg-white hover:bg-gray-100 text-neutral-dark px-6 py-3 rounded-lg font-medium transition-custom border border-gray-200 shadow-md hover:shadow-lg">
+                        了解更多 <i class="fa fa-info-circle ml-2"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="md:w-1/2 relative">
+                <img src="images/ruxian.png" alt="乳腺癌数据分析可视化">
+                <div class="absolute top-10 right-10 -z-10 w-full h-full bg-accent/20 rounded-2xl transform -rotate-3"></div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
+            <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-custom transform hover:-translate-y-2">
+                <div class="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fa fa-stethoscope text-primary text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">MP分级预测</h3>
+                <p class="text-gray-600">通过输入临床特征参数，快速预测乳腺癌Miller&Payne分级结果，辅助评估治疗效果。</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-custom transform hover:-translate-y-2">
+                <div class="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fa fa-flask text-secondary text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">分子分型分析</h3>
+                <p class="text-gray-600">基于免疫组化指标和临床数据，预测乳腺癌分子亚型（Luminal A/B、HER2型、三阴性等）。</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-custom transform hover:-translate-y-2">
+                <div class="w-14 h-14 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fa fa-dna text-accent text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">基因组数据分析</h3>
+                <p class="text-gray-600">整合基因组数据，搭建多模态分析环境，提供更全面的乳腺癌分型预测与研究工具。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================== 【已修改】MP分级预测模块 ====================== -->
+<section id="mp-prediction" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">MP分级预测工具</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">上传Excel患者数据，系统基于随机森林模型预测MP分级≥4风险</p>
+        </div>
+
+        <div class="max-w-4xl mx-auto bg-neutral rounded-2xl shadow-xl overflow-hidden">
+            <div class="grid md:grid-cols-5">
+                <!-- 上传表单区 -->
+                <div class="md:col-span-3 p-6 md:p-8">
+                    <form id="mp-form" action="/predict" method="post" enctype="multipart/form-data" class="space-y-6">
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                            <i class="fa fa-file-excel-o text-3xl text-primary mb-3"></i>
+                            <h3 class="text-lg font-medium mb-2">上传患者Excel文件</h3>
+                            <p class="text-sm text-gray-500 mb-4">支持 .xlsx / .xls 格式</p>
+                            <input type="file" name="file" id="excel_file" accept=".xlsx,.xls" required
+                                   class="block w-full text-gray-700 bg-white mb-4"/>
+                            <div id="file-info" class="text-sm text-gray-600 hidden">已选择文件：<span id="fname"></span></div>
+                        </div>
+                        <button type="submit" class="w-full bg-primary hover:bg-primary/90 text-white py-3 rounded-lg shadow-lg flex items-center justify-center">
+                            <i class="fa fa-rocket mr-2"></i> 开始预测
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 结果展示区 -->
+                <div id="mp-result" class="md:col-span-2 bg-primary/5 p-6 flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-4 shadow-md">
+                        <i class="fa fa-upload text-3xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">等待上传</h3>
+                    <p class="text-gray-600">上传Excel文件并开始预测</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 批量结果展示区域 -->
+        <div id="result-container" class="mt-10 hidden">
+            <h3 class="text-lg font-bold mb-4">预测结果列表</h3>
+            <div id="result-list" class="space-y-3"></div>
+        </div>
+    </div>
+</section>
+<!-- ===================================================================== -->
+
+<section id="molecular-typing" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">乳腺分子分型预测</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">基于患者的免疫组化指标和临床特征，预测乳腺癌分子亚型，为个体化治疗方案提供参考。</p>
+        </div>
+        <div class="max-w-5xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+                    <h3 class="text-xl font-bold mb-6 flex items-center">
+                        <i class="fa fa-file-text-o text-secondary mr-2"></i> 数据输入
+                    </h3>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">输入方式</label>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="input-type" value="manual" checked class="w-4 h-4 text-secondary focus:ring-secondary border-gray-300">
+                                    <span class="ml-2">手动输入</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="input-type" value="upload" class="w-4 h-4 text-secondary focus:ring-secondary border-gray-300">
+                                    <span class="ml-2">文件上传</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div id="manual-input-form" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label for="m-age" class="block text-sm font-medium text-gray-700 mb-1">年龄 (岁)</label>
+                                    <input type="number" id="m-age" name="m-age" min="18" max="120" step="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-custom">
+                                </div>
+                                <div>
+                                    <label for="m-tumor-size" class="block text-sm font-medium text-gray-700 mb-1">肿瘤大小 (cm)</label>
+                                    <input type="number" id="m-tumor-size" name="m-tumor-size" min="0.1" max="20" step="0.1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-custom">
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <label class="block text-sm font-medium text-gray-700">免疫组化指标</label>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label for="m-er" class="block text-xs text-gray-500 mb-1">ER表达</label>
+                                        <select id="m-er" name="m-er" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-custom">
+                                            <option value="">请选择</option>
+                                            <option value="(-)">(-)</option>
+                                            <option value="(+)"> (+)</option>
+                                            <option value="(++)"> (++)</option>
+                                            <option value="(+++)"> (+++)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="m-pr" class="block text-xs text-gray-500 mb-1">PR表达</label>
+                                        <select id="m-pr" name="m-pr" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-custom">
+                                            <option value="">请选择</option>
+                                            <option value="(-)">(-)</option>
+                                            <option value="(+)"> (+)</option>
+                                            <option value="(++)"> (++)</option>
+                                            <option value="(+++)"> (+++)</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="m-her2" class="block text-xs text-gray-500 mb-1">HER2表达</label>
+                                        <select id="m-her2" name="m-her2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-custom">
+                                            <option value="">请选择</option>
+                                            <option value="(-)">(-)</option>
+                                            <option value="(1+)"> (1+)</option>
+                                            <option value="(2+)"> (2+)</option>
+                                            <option value="(3+)"> (3+)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="m-ki67" class="block text-sm font-medium text-gray-700 mb-1">Ki-67指数 (%)</label>
+                                <input type="number" id="m-ki67" name="m-ki67" min="0" max="100" step="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary focus:border-secondary transition-custom">
+                            </div>
+                            <button id="predict-molecular" class="w-full bg-secondary hover:bg-secondary/90 text-white py-3 px-6 rounded-lg font-medium transition-custom shadow-lg hover:shadow-xl flex items-center justify-center">
+                                <i class="fa fa-flask mr-2"></i> 预测分子分型
+                            </button>
+                        </div>
+                        <div id="file-upload-form" class="hidden space-y-4">
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                <i class="fa fa-upload text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-600 mb-4">拖拽Excel文件到此处或点击上传</p>
+                                <input type="file" id="file-upload" accept=".xlsx, .xls" class="hidden">
+                                <button type="button" id="upload-btn" class="bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-medium transition-custom">
+                                    选择文件
+                                </button>
+                                <p class="text-xs text-gray-500 mt-2">支持格式: .xlsx, .xls (最大5MB)</p>
+                            </div>
+                            <div id="uploaded-file-info" class="hidden p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <i class="fa fa-file-excel-o text-green-600 mr-2"></i>
+                                        <span id="file-name" class="text-sm font-medium">data.xlsx</span>
+                                    </div>
+                                    <button id="remove-file" class="text-gray-400 hover:text-gray-600">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button id="process-uploaded-file" class="w-full bg-secondary hover:bg-secondary/90 text-white py-3 px-6 rounded-lg font-medium transition-custom shadow-lg hover:shadow-xl flex items-center justify-center">
+                                <i class="fa fa-cog mr-2"></i> 处理并预测
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8">
+                    <h3 class="text-xl font-bold mb-6 flex items-center">
+                        <i class="fa fa-bar-chart text-secondary mr-2"></i> 预测结果
+                    </h3>
+                    <div id="molecular-result" class="h-full flex flex-col items-center justify-center text-center">
+                        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                            <i class="fa fa-question-circle text-4xl text-gray-400"></i>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-500 mb-2">等待预测</h4>
+                        <p class="text-gray-400 text-sm">请完成左侧数据输入并点击预测按钮</p>
+                        <div class="mt-8 w-full grid grid-cols-2 gap-3">
+                            <div class="bg-blue-50 p-3 rounded-lg text-xs">
+                                <p class="font-medium text-blue-700">Luminal A型</p>
+                                <p class="text-blue-600 mt-1">ER+/PR+, HER2-, Ki-67低</p>
+                            </div>
+                            <div class="bg-green-50 p-3 rounded-lg text-xs">
+                                <p class="font-medium text-green-700">Luminal B型</p>
+                                <p class="text-green-600 mt-1">ER+/PR+, HER2+/-, Ki-67高</p>
+                            </div>
+                            <div class="bg-purple-50 p-3 rounded-lg text-xs">
+                                <p class="font-medium text-purple-700">HER2过表达型</p>
+                                <p class="text-purple-600 mt-1">ER-, PR-, HER2+</p>
+                            </div>
+                            <div class="bg-red-50 p-3 rounded-lg text-xs">
+                                <p class="font-medium text-red-700">三阴性</p>
+                                <p class="text-red-600 mt-1">ER-, PR-, HER2-</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 bg-white p-6 rounded-2xl shadow-xl">
+                <h3 class="text-xl font-bold mb-6">乳腺癌分子分型分布统计</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div><canvas id="molecular-distribution-chart" height="300"></canvas></div>
+                    <div><canvas id="molecular-survival-chart" height="300"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="genomic-analysis" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">基因组数据分析平台</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">整合基因组数据与临床特征，通过多模态融合分析，提供更精准的乳腺癌分型预测与研究工具。</p>
+        </div>
+        <div class="max-w-5xl mx-auto">
+            <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-2xl p-6 md:p-8 shadow-lg mb-10">
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="mb-6 md:mb-0">
+                        <h3 class="text-xl font-bold mb-2 flex items-center">
+                            <i class="fa fa-server text-accent mr-2"></i> 基因组分析环境
+                        </h3>
+                        <p class="text-gray-600">基于Raptor和Scikit-learn构建的多模态分析管道</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center"><span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span><span class="text-sm font-medium">Raptor服务运行中</span></div>
+                        <div class="flex items-center"><span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span><span class="text-sm font-medium">模型服务可用</span></div>
+                        <button class="bg-accent hover:bg-accent/90 text-white py-2 px-4 rounded-lg text-sm font-medium transition-custom shadow-md hover:shadow-lg">
+                            <i class="fa fa-refresh mr-1"></i> 重启服务
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                    <div class="p-6">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa fa-cloud-upload text-accent text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-3">基因组数据上传</h3>
+                        <p class="text-gray-600 text-sm mb-4">上传基因组测序数据（FASTQ/VCF格式）进行分析</p>
+                        <div class="border-2 border-dashed border-gray-200 rounded-lg p-4 text-center">
+                            <i class="fa fa-file-text-o text-gray-400 text-2xl mb-2"></i>
+                            <p class="text-sm text-gray-500 mb-3">拖拽文件到此处或点击上传</p>
+                            <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 py-1.5 px-3 rounded-lg text-sm font-medium transition-custom">选择基因组文件</button>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-6 py-4 border-t border-gray-100"><p class="text-xs text-gray-500">支持格式: .fastq, .vcf, .bam (最大20GB)</p></div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                    <div class="p-6">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa fa-cogs text-accent text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-3">多模态分析工具</h3>
+                        <p class="text-gray-600 text-sm mb-4">整合基因组数据与临床特征进行多维度分析</p>
+                        <div class="space-y-3">
+                            <button class="w-full bg-white border border-gray-200 hover:border-accent hover:bg-purple-50 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium transition-custom flex items-center justify-between">
+                                <span>基因突变分析</span><i class="fa fa-angle-right text-gray-400"></i></button>
+                            <button class="w-full bg-white border border-gray-200 hover:border-accent hover:bg-purple-50 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium transition-custom flex items-center justify-between">
+                                <span>基因表达谱分析</span><i class="fa fa-angle-right text-gray-400"></i></button>
+                            <button class="w-full bg-white border border-gray-200 hover:border-accent hover:bg-purple-50 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium transition-custom flex items-center justify-between">
+                                <span>临床-基因组关联分析</span><i class="fa fa-angle-right text-gray-400"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                    <div class="p-6">
+                        <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa fa-pie-chart text-accent text-xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold mb-3">结果可视化</h3>
+                        <p class="text-gray-600 text-sm mb-4">生成交互式图表展示基因组分析结果</p>
+                        <div class="space-y-3">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="flex items-center justify-between mb-1"><span class="text-xs font-medium text-gray-700">突变频谱分析</span><span class="text-xs text-green-600">已完成</span></div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5"><div class="bg-accent h-1.5 rounded-full" style="width:100%"></div></div>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="flex items-center justify-between mb-1"><span class="text-xs font-medium text-gray-700">通路富集分析</span><span class="text-xs text-yellow-600">处理中</span></div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5"><div class="bg-yellow-400 h-1.5 rounded-full" style="width:65%"></div></div>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="flex items-center justify-between mb-1"><span class="text-xs font-medium text-gray-700">生存分析</span><span class="text-xs text-gray-500">未开始</span></div>
+                                <div class="w-full bg-gray-200 rounded-full h-1.5"><div class="bg-gray-400 h-1.5 rounded-full" style="width:0%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-10 bg-white rounded-2xl shadow-xl p-6 md:p-8">
+                <h3 class="text-xl font-bold mb-6">基因组分析结果</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div><h4 class="text-lg font-medium mb-4">关键基因突变频率</h4><canvas id="mutation-frequency-chart" height="300"></canvas></div>
+                    <div><h4 class="text-lg font-medium mb-4">信号通路富集分析</h4><canvas id="pathway-enrichment-chart" height="300"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="about" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-[clamp(1.8rem,4vw,2.5rem)] font-bold mb-4">关于本项目</h2>
+                <p class="text-gray-600">乳腺癌多模态分型预测平台旨在整合临床数据、影像特征和基因组信息，提供精准的乳腺癌分型预测工具，辅助临床决策和科研工作。</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-bold mb-4 flex items-center"><i class="fa fa-lightbulb-o text-primary mr-2"></i> 研究背景</h3>
+                    <p class="text-gray-600 mb-4">乳腺癌是女性最常见的恶性肿瘤之一，其异质性高，不同亚型的治疗方案和预后差异显著。精准的分型对于制定个体化治疗方案至关重要。</p>
+                    <p class="text-gray-600">传统的分型方法主要基于免疫组化指标，但存在一定局限性。本项目通过整合多模态数据，提高分型的准确性和可靠性。</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-bold mb-4 flex items-center"><i class="fa fa-objectives text-primary mr-2"></i> 研究目标</h3>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-start"><i class="fa fa-check-circle text-primary mt-1 mr-2"></i><span>开发在线MP分级预测工具，辅助评估新辅助化疗疗效</span></li>
+                        <li class="flex items-start"><i class="fa fa-check-circle text-primary mt-1 mr-2"></i><span>构建乳腺分子分型预测模型，提高分型准确性</span></li>
+                        <li class="flex items-start"><i class="fa fa-check-circle text-primary mt-1 mr-2"></i><span>搭建基因组数据分析环境，实现多模态数据融合分析</span></li>
+                        <li class="flex items-start"><i class="fa fa-check-circle text-primary mt-1 mr-2"></i><span>弥补缺失的钙化描述等临床特征，提高数据完整性</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-lg mb-12">
+                <h3 class="text-xl font-bold mb-4 flex items-center"><i class="fa fa-database text-primary mr-2"></i> 数据来源与方法</h3>
+                <div class="space-y-4 text-gray-600">
+                    <p>本研究的数据来源于临床病例数据库，包含患者的基本信息、临床特征、影像资料、病理检查结果和基因组数据等多维度信息。</p>
+                    <p>在方法上，我们采用了多种机器学习算法（如随机森林、支持向量机等）构建预测模型，并通过交叉验证等方法评估模型性能，确保预测的准确性和可靠性。</p>
+                    <p>基因组数据分析部分基于Raptor工具进行序列比对和变异检测，结合Scikit-learn等机器学习库实现多模态数据的融合分析。</p>
+                </div>
+            </div>
+            <h3 class="text-xl font-bold mb-6 text-center">研究团队</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="text-center"><div class="w-24 h-24 rounded-full overflow-hidden mx-auto mb-3 border-2 border-gray-200"><img src="https://picsum.photos/id/1001/200/200" alt="团队成员" class="w-full h-full object-cover"></div><h4 class="font-medium">张教授</h4><p class="text-sm text-gray-500">项目负责人</p></div>
+                <div class="text-center"><div class="w-24 h-24 rounded-full overflow-hidden mx-auto mb-3 border-2 border-gray-200"><img src="https://picsum.photos/id/1002/200/200" alt="团队成员" class="w-full h-full object-cover"></div><h4 class="font-medium">李医生</h4><p class="text-sm text-gray-500">临床顾问</p></div>
+                <div class="text-center"><div class="w-24 h-24 rounded-full overflow-hidden mx-auto mb-3 border-2 border-gray-200"><img src="https://picsum.photos/id/1003/200/200" alt="团队成员" class="w-full h-full object-cover"></div><h4 class="font-medium">王工程师</h4><p class="text-sm text-gray-500">算法开发</p></div>
+                <div class="text-center"><div class="w-24 h-24 rounded-full overflow-hidden mx-auto mb-3 border-2 border-gray-200"><img src="https://picsum.photos/id/1004/200/200" alt="团队成员" class="w-full h-full object-cover"></div><h4 class="font-medium">赵博士</h4><p class="text-sm text-gray-500">基因组分析</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="bg-neutral-dark text-white py-12">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+                <div class="flex items-center space-x-2 mb-4"><i class="fa fa-heartbeat text-primary text-2xl"></i><h3 class="text-xl font-bold">乳腺癌多模态分型预测平台</h3></div>
+                <p class="text-gray-400 text-sm">整合多模态数据，提供精准的乳腺癌分型预测，辅助临床决策与科研工作。</p>
+            </div>
+            <div><h4 class="text-lg font-bold mb-4">快速链接</h4><ul class="space-y-2 text-gray-400"><li><a href="#home" class="hover:text-white transition-custom">首页</a></li><li><a href="#mp-prediction" class="hover:text-white transition-custom">MP分级预测</a></li><li><a href="#molecular-typing" class="hover:text-white transition-custom">分子分型</a></li><li><a href="#genomic-analysis" class="hover:text-white transition-custom">基因组分析</a></li><li><a href="#about" class="hover:text-white transition-custom">关于项目</a></li></ul></div>
+            <div><h4 class="text-lg font-bold mb-4">资源</h4><ul class="space-y-2 text-gray-400"><li><a href="#" class="hover:text-white transition-custom">使用手册</a></li><li><a href="#" class="hover:text-white transition-custom">数据字典</a></li><li><a href="#" class="hover:text-white transition-custom">API文档</a></li><li><a href="#" class="hover:text-white transition-custom">研究论文</a></li><li><a href="#" class="hover:text-white transition-custom">常见问题</a></li></ul></div>
+            <div><h4 class="text-lg font-bold mb-4">联系我们</h4><ul class="space-y-2 text-gray-400"><li class="flex items-center"><i class="fa fa-envelope-o mr-2"></i><a href="mailto:contact@example.com" class="hover:text-white transition-custom">contact@example.com</a></li><li class="flex items-center"><i class="fa fa-phone mr-2"></i><span>010-12345678</span></li><li class="flex items-center"><i class="fa fa-map-marker mr-2"></i><span>北京市海淀区医院路88号</span></li></ul><div class="mt-4 flex space-x-4"><a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-primary transition-custom"><i class="fa fa-weixin"></i></a><a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-primary transition-custom"><i class="fa fa-weibo"></i></a><a href="#" class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-primary transition-custom"><i class="fa fa-github"></i></a></div></div>
+        </div>
+        <div class="border-t border-gray-700 pt-8 text-center text-gray-500 text-sm"><p>© 2025 乳腺癌多模态分型预测平台 版权所有 | 京ICP备12345678号</p></div>
+    </div>
+</footer>
+
+<button id="back-to-top" class="fixed bottom-6 right-6 bg-primary hover:bg-primary/90 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-custom opacity-0 invisible">
+    <i class="fa fa-arrow-up"></i>
+</button>
+
+<script>
+    const navbar = document.getElementById('navbar');
+    const backToTop = document.getElementById('back-to-top');
+    window.addEventListener('scroll', () => {
+        if(window.scrollY>50){navbar.classList.add('py-2','shadow-lg');navbar.classList.remove('py-3','shadow-md');backToTop.classList.remove('opacity-0','invisible')}else{navbar.classList.add('py-3','shadow-md');navbar.classList.remove('py-2','shadow-lg');backToTop.classList.add('opacity-0','invisible')}});
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuToggle.addEventListener('click',()=>{mobileMenu.classList.toggle('hidden')});
+    document.querySelectorAll('a[href^="#"]').forEach(anchor=>{anchor.addEventListener('click',function(e){e.preventDefault();const targetId=this.getAttribute('href');const targetElement=document.querySelector(targetId);if(targetElement){window.scrollTo({top:targetElement.offsetTop-80,behavior:'smooth'});if(!mobileMenu.classList.contains('hidden')){mobileMenu.classList.add('hidden')}}})});
+    backToTop.addEventListener('click',()=>{window.scrollTo({top:0,behavior:'smooth'})});
+
+    // ====================== 【已对接后端】文件上传预测逻辑 ======================
+    const form = document.getElementById('mp-form');
+    const resultDiv = document.getElementById('mp-result');
+    const container = document.getElementById('result-container');
+    const list = document.getElementById('result-list');
+
+    document.getElementById('excel_file').addEventListener('change', function(e){
+        if(e.target.files[0]){
+            document.getElementById('file-info').classList.remove('hidden');
+            document.getElementById('fname').textContent = e.target.files[0].name;
+        }
+    });
+
+    form.addEventListener('submit', function(e){
+        e.preventDefault();
+        resultDiv.innerHTML = `
+            <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-4">
+                <i class="fa fa-spinner fa-spin text-3xl text-primary"></i>
+            </div>
+            <h3 class="text-xl font-bold">正在预测...</h3>
+            <p class="text-gray-600">模型处理中，请稍候</p>
+        `;
+        const formData = new FormData(form);
+        fetch('/predict', {method:'POST', body:formData}).then(res=>res.text()).then(html=>{
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const results = JSON.parse(doc.getElementById('result-data').textContent);
+            container.classList.remove('hidden');
+            list.innerHTML = '';
+            results.forEach(item=>{
+                const color = item.prediction === 1 ? 'red' : 'green';
+                const card = document.createElement('div');
+                card.className = 'p-4 rounded-lg shadow bg-white border-l-4 border-' + color + '-500';
+                card.innerHTML = `
+                    <div class="font-bold">${item.risk_level}</div>
+                    <div>预测概率：${item.probability}</div>
+                `;
+                list.appendChild(card);
+            });
+            resultDiv.innerHTML = `
+                <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-4 text-green-500">
+                    <i class="fa fa-check-circle text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-green-600">预测完成</h3>
+                <p class="text-gray-600">共 ${results.length} 条样本</p>
+            `;
+        }).catch(err=>{
+            resultDiv.innerHTML = `
+                <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-4 text-red-500">
+                    <i class="fa fa-times text-4xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-red-600">预测失败</h3>
+                <p class="text-gray-600">${err.message}</p>
+            `;
+        });
+    });
+
+    // 其他功能
+    const inputTypeRadios = document.querySelectorAll('input[name="input-type"]');
+    const manualInputForm = document.getElementById('manual-input-form');
+    const fileUploadForm = document.getElementById('file-upload-form');
+    inputTypeRadios.forEach(radio=>{radio.addEventListener('change',()=>{if(radio.value==='manual'){manualInputForm.classList.remove('hidden');fileUploadForm.classList.add('hidden')}else{manualInputForm.classList.add('hidden');fileUploadForm.classList.remove('hidden')}})});
+    const uploadBtn = document.getElementById('upload-btn');
+    const fileUpload = document.getElementById('file-upload');
+    const uploadedFileInfo = document.getElementById('uploaded-file-info');
+    const fileName = document.getElementById('file-name');
+    const removeFile = document.getElementById('remove-file');
+    uploadBtn.addEventListener('click',()=>{fileUpload.click()});
+    fileUpload.addEventListener('change',()=>{if(fileUpload.files.length>0){fileName.textContent=fileUpload.files[0].name;uploadedFileInfo.classList.remove('hidden')}});
+    removeFile.addEventListener('click',()=>{fileUpload.value='';uploadedFileInfo.classList.add('hidden')});
+
+    // 图表初始化
+    window.addEventListener('load',()=>{
+        new Chart(document.getElementById('mp-correlation-chart'),{type:'scatter',data:{datasets:[{label:'MP1',data:Array(20).fill().map(()=>({x:Math.random()*3+0.5,y:Math.random()*30+10})),backgroundColor:'rgba(239,68,68,0.6)'},{label:'MP3',data:Array(20).fill().map(()=>({x:Math.random()*2+1.5,y:Math.random()*40+30})),backgroundColor:'rgba(234,179,8,0.6)'},{label:'MP5',data:Array(20).fill().map(()=>({x:Math.random()*2+2.5,y:Math.random()*30+60})),backgroundColor:'rgba(34,197,94,0.6)'}]},options:{responsive:true}});
+        new Chart(document.getElementById('molecular-distribution-chart'),{type:'pie',data:{labels:['LuminalA','LuminalB','HER2','三阴性'],datasets:[{data:[45,25,15,15],backgroundColor:['rgba(59,130,246,0.7)','rgba(34,197,94,0.7)','rgba(139,92,246,0.7)','rgba(239,68,68,0.7)']}]},options:{responsive:true}});
+        new Chart(document.getElementById('molecular-survival-chart'),{type:'line',data:{labels:['1年','2年','3年','4年','5年'],datasets:[{label:'LuminalA',data:[98,95,92,88,85],borderColor:'rgb(59,130,246)',fill:true},{label:'LuminalB',data:[95,90,85,80,75],borderColor:'rgb(34,197,94)',fill:true},{label:'HER2',data:[90,82,75,68,62],borderColor:'rgb(139,92,246)',fill:true},{label:'三阴性',data:[85,70,60,50,45],borderColor:'rgb(239,68,68)',fill:true}]},options:{responsive:true}});
+        new Chart(document.getElementById('mutation-frequency-chart'),{type:'bar',data:{labels:['TP53','PIK3CA','GATA3','CDH1','PTEN','RB1'],datasets:[{data:[32,28,15,12,10,8],backgroundColor:'rgba(139,92,246,0.7)'}]},options:{responsive:true}});
+        new Chart(document.getElementById('pathway-enrichment-chart'),{type:'bar',data:{labels:['PI3K-Akt','MAPK','细胞周期','凋亡','雌激素','HER2'],datasets:[{data:[2.8,2.5,2.1,1.9,1.7,1.5],backgroundColor:'rgba(168,85,247,0.7)'}]},options:{indexAxis:'y',responsive:true}});
+    });
+</script>
+</body>
+</html>
