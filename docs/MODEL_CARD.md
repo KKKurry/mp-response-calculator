@@ -1,24 +1,35 @@
-# 模型说明卡：MP 4–5 二分类判定版
+# Model Card: MRI-IHC MP Response Calculator
 
-## 系统用途
-本系统用于根据治疗前临床特征、MRI影像特征及免疫组化指标，输出乳腺癌新辅助治疗后是否预测为 Miller–Payne 4–5 级良好病理反应。
+## Intended use
 
-## 输出形式
-V15 版本的前端主结果为二分类判定：
+This model is designed as a research-use web calculator to estimate the probability of favourable pathological response, defined as Miller–Payne grade 4–5, before treatment.
 
-- 是：预测为 MP 4–5 级良好病理反应
-- 否：预测为 MP 1–3 级非良好病理反应
+## Input variables
 
-## 模型输出值说明
-模型内部会产生连续输出值，但该值仅用于与固定阈值进行比较，不应解释为患者达到 MP 4–5 的真实临床发生概率。
+The model uses pretreatment variables only:
 
-## 固定阈值说明
-二分类阈值来源于开发集交叉验证输出，并采用 Youden 指数最大化原则确定。阈值确定后保持固定，不在测试集或在线预测阶段重新调整。
+- Age
+- Calcification status
+- DCE-MRI curve pattern
+- ADC value
+- Maximum tumour diameter in cm
+- ER percentage
+- PR percentage
+- HER2 score
+- Ki-67 percentage
 
-判定规则：
+Excluded fields include patient names, examination dates, original MP grade, and molecular subtype.
 
-- 模型输出值 ≥ 固定阈值：预测为 MP 4–5
-- 模型输出值 < 固定阈值：预测为 MP 1–3
+## Model family
 
-## 使用边界
-本系统为医学科研辅助看板和模型转化展示原型，仅供研究使用，不构成诊断意见，也不能替代多学科临床决策。
+Calibrated Random Forest with median imputation and rule-based clinical feature engineering.
+
+## Output
+
+The website returns the estimated MP 4–5 response probability, a likelihood tier, and a predicted MP response group for research presentation.
+
+## Limitations
+
+- The current package is based on the supplied dataset and saved model artifact.
+- Independent temporal/external validation is recommended before clinical interpretation.
+- The app should not be used as a standalone clinical decision-making system.
